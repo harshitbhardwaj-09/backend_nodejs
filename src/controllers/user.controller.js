@@ -2,10 +2,12 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import {ApiError} from "../utils/ApiError.js";
 import {uploadOnCloudinary} from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { User} from "../models/user.model.js"
 const registerUser=asyncHandler( async (req,res)=>{
-    
-    const { fullname,email,username,register }= req.body;
-    console.log("email: ",email);
+    console.log("Request body:", req.body);
+
+    const { fullname,email,username,password}= req.body;
+    console.log("fullname:", fullname, "email:", email, "username:", username, "password:", password);
     if(
         [fullname,email,username,password].some((field)=>
         field?.trim()==="")
@@ -28,14 +30,14 @@ const registerUser=asyncHandler( async (req,res)=>{
     if(!avatar){
         throw new ApiError(400,"Avatar file is required");
     }
-   const user=await  user.create({
+   const user=await  User.create({
         fullname,
         avatar:avatar.url,
         coverImage:coverImage?.url||"",
         password,
         username:username.toLowerCase()
     })
-    const createdUser=await user.findById(user._id).select(
+    const createdUser=await User.findById(user._id).select(
         "-password -refreshToken"
     )
     if(!createdUser){
