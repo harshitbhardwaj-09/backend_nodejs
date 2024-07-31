@@ -30,10 +30,10 @@ const userschema=new Schema({
     coverImage:{
         type:String, //cloudinary url
     },
-    watchhistory:[
+    watchHistory:[
         {
         type:Schema.Types.ObjectId, //cloudinary url
-        reqired:true
+        required:true
         }
     ],
     password:{
@@ -53,7 +53,7 @@ userschema.pre("save",async function (next){
     this.password=await bcrypt.hash(this.password,10);
     next();
 })
-userschema.method.isPasswordCorrect=async function (password){
+userschema.methods.isPasswordCorrect=async function (password){
     return await bcrypt.compare(password,this.password);
 }
 userschema.methods.generateAccessToken=function(){

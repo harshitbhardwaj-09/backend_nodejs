@@ -12,7 +12,7 @@ const generateAccessAndRefreshToken=async(userId)=>{
         const accessToken=user.generateAccessToken();
         const refreshToken=user.generateRefreshToken();
         user.refreshToken=refreshToken;
-        user.save({ validateBeforeSave:false });
+        await user.save({ validateBeforeSave:false });
         return {accessToken,refreshToken};
     }
     catch(error){
@@ -73,7 +73,8 @@ const registerUser=asyncHandler( async (req,res)=>{
 })
 const loginUser=asyncHandler(async(req,res)=>{
     const {email,username,password} =req.body;
-    if(!(username || email)){
+    console.log("request body:",req.body);
+    if(!username && !email){
         throw new ApiError(404,"username or email is required");
     }
     const user=await User.findOne({
@@ -86,7 +87,7 @@ const loginUser=asyncHandler(async(req,res)=>{
     if(!isPasswordValid){
         throw new ApiError(401,"invalid user credentials");
     }
-    const { accessToken, refreshToken }=await generateAccessAndRefreshToken(user._id);
+    const { accessToken , refreshToken }=await generateAccessAndRefreshToken(user._id);
     const loggedInUser=await User.findById(user._id).select("-password -refreshToken");
     
     const options={
