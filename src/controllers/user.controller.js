@@ -19,6 +19,7 @@ const generateAccessAndRefreshToken=async(userId)=>{
         throw new ApiError(500,"something went wrong while generating refresh and access token")
     }
 }
+
 const registerUser=asyncHandler( async (req,res)=>{
     //console.log("Request body:", req.body);
 
@@ -171,6 +172,8 @@ const refreshAccessToken = asyncHandler(async(req,res)=>{
         throw new ApiError(401,error?.message||"Invalid refrsh token")
     }
 })
+
+
 export {
     registerUser,
     loginUser,
